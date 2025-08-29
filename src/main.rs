@@ -16,13 +16,17 @@ async fn manual_hello() -> impl web::Responder {
 
 #[ntex::main]
 async fn main() -> std::io::Result<()> {
-    web::HttpServer::new(|| {
+    let server = web::HttpServer::new(|| {
         web::App::new()
             .service(hello)
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
-    })
-    .bind(("127.0.0.1", 8080))?
-    .run()
-    .await
+    });
+    
+    let addr = ("127.0.0.1", 8080);
+    println!("Server running on http://{}:{}", addr.0, addr.1);
+    
+    server.bind(addr)?
+        .run()
+        .await
 }
